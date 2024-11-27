@@ -4,15 +4,14 @@ import './App.css';
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
 
-  // URL della copertina di default
-  const defaultCover = '/logo.png'; // Assicurati che il file logo.png sia nella cartella 'public'
+  const defaultCover = '/logo.png'; // Assicurati che questo file esista nella cartella public
 
   useEffect(() => {
     const fetchCurrentSong = async () => {
       try {
         const response = await fetch('https://api.laut.fm/station/meteomeano/current_song');
         const data = await response.json();
-        console.log('Dati API:', data); // Logga i dati per verificare cosa restituisce l'API
+        console.log('Dati API:', data);
         setCurrentSong(data);
       } catch (error) {
         console.error('Errore nel recupero del brano corrente:', error);
@@ -20,43 +19,29 @@ function App() {
     };
 
     fetchCurrentSong();
-    const interval = setInterval(fetchCurrentSong, 30000); // Aggiorna ogni 30 secondi
-
+    const interval = setInterval(fetchCurrentSong, 30000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <header className="bg-blue-600 w-full py-4 text-white text-center">
-        <h1 className="text-3xl font-bold">Radio Meano</h1>
-      </header>
-      <main className="flex flex-col items-center justify-center flex-grow">
+    <div className="App">
+      <header className="App-header">
+        <h1>Radio Meano</h1>
         {currentSong ? (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md">
+          <div>
             <img
-              src={currentSong.image ? currentSong.image : defaultCover}
+              src={currentSong.image || defaultCover}
               alt={currentSong.title || 'Radio Meano'}
-              className="h-40 w-40 mx-auto rounded-lg"
+              style={{ width: '300px', height: '300px' }}
             />
-            <h2 className="text-xl font-semibold mt-4">
-              {currentSong.title || 'In onda su Radio Meano'}
-            </h2>
-            <p className="text-gray-600">
-              {currentSong.artist?.name || 'La tua musica preferita'}
-            </p>
+            <h2>{currentSong.title || 'In onda su Radio Meano'}</h2>
+            <p>{currentSong.artist?.name || 'Musica senza confini'}</p>
           </div>
         ) : (
-          <p>Caricamento informazioni sul brano in corso...</p>
+          <p>Caricamento in corso...</p>
         )}
-        <audio
-          controls
-          className="mt-4"
-          src="https://stream.laut.fm/meteomeano"
-        />
-      </main>
-      <footer className="bg-gray-800 w-full py-2 text-white text-center">
-        <p>&copy; 2024 Radio Meano. Tutti i diritti riservati.</p>
-      </footer>
+        <audio controls src="https://stream.laut.fm/meteomeano"></audio>
+      </header>
     </div>
   );
 }
