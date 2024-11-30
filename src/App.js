@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
 
-  // URL della copertina di default
-  const defaultCover = '/logo.png'; // Assicurati che questo file sia nella cartella 'public'
+  // Riferimenti per i titoli
+  const titleRef = useRef(null);
+  const artistRef = useRef(null);
+
+  // Stato per abilitare lo scorrimento
+  const [isTitleScrollable, setIsTitleScrollable] = useState(false);
+  const [isArtistScrollable, setIsArtistScrollable] = useState(false);
+
+  const defaultCover = process.env.PUBLIC_URL + '/logo.png';
 
   useEffect(() => {
     const fetchCurrentSong = async () => {
@@ -24,36 +31,64 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Verifica se il titolo e l'artista devono scorrere
+    if (titleRef.current) {
+      setIsTitleScrollable(titleRef.current.scrollWidth > titleRef.current.clientWidth);
+    }
+    if (artistRef.current) {
+      setIsArtistScrollable(artistRef.current.scrollWidth > artistRef.current.clientWidth);
+    }
+  }, [currentSong]);
+
+  const getCoverImage = () => {
+    if (currentSong?.artist?.image) {
+      const imageUrl = currentSong.artist.image;
+      return imageUrl.startsWith('http://')
+        ? imageUrl.replace('http://', 'https://')
+        : imageUrl;
+    }
+    return defaultCover;
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <header className="bg-blue-600 w-full py-4 text-white text-center">
-        <h1 className="text-3xl font-bold">Radio Meano</h1>
+    <div className="App">
+      <header>
+        <h1>Radio Meano</h1>
       </header>
-      <main className="flex flex-col items-center justify-center flex-grow">
+      <main>
         {currentSong ? (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md">
+          <div className="song-info">
             <img
-              src={currentSong.image ? currentSong.image : defaultCover}
+              src={getCoverImage()}
               alt={currentSong.title || 'Radio Meano'}
-              className="h-40 w-40 mx-auto rounded-lg"
+              className="cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultCover;
+              }}
             />
-            <h2 className="text-xl font-semibold mt-4">
-              {currentSong.title || 'In onda su Radio Meano'}
-            </h2>
-            <p className="text-gray-600">
-              {currentSong.artist?.name || 'Musica senza confini'}
-            </p>
+            {/* Titolo */}
+            <div
+              className={`marquee-container ${isTitleScrollable ? 'scrollable' : ''}`}
+              ref={titleRef}
+            >
+              <span>{currentSong.title || 'Ora in onda'}</span>
+            </div>
+            {/* Artista */}
+            <div
+              className={`marquee-container ${isArtistScrollable ? 'scrollable' : ''}`}
+              ref={artistRef}
+            >
+              <span>{currentSong.artist?.name || 'Artista sconosciuto'}</span>
+            </div>
           </div>
         ) : (
-          <p>Caricamento informazioni sul brano in corso...</p>
+          <p>Caricamento in corso...</p>
         )}
-        <audio
-          controls
-          className="mt-4"
-          src="https://stream.laut.fm/meteomeano"
-        />
+        <audio controls src="https://stream.laut.fm/meteomeano"></audio>
       </main>
-      <footer className="bg-gray-800 w-full py-2 text-white text-center">
+      <footer>
         <p>&copy; 2024 Radio Meano. Tutti i diritti riservati.</p>
       </footer>
     </div>

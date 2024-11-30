@@ -1,18 +1,107 @@
+/* App.css */
+
+/* Stile base */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
+/* Intestazione */
+header {
+  background-color: #007BFF;
   color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Contenitore principale */
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cover {
+  border-radius: 10px;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* Contenitore per i titoli e l'artista */
+.marquee-container {
+  overflow: hidden; /* Nasconde il testo in eccesso */
+  white-space: nowrap; /* Evita il ritorno a capo */
+  text-align: center;
+  max-width: 300px; /* Limita la larghezza */
+  font-size: 1.5rem; /* Dimensione uniforme */
+  font-weight: bold; /* Grassetto */
+  color: #2c3e50; /* Colore moderno */
+  margin: 10px 0; /* Spaziatura verticale */
+}
+
+/* Testo statico */
+.marquee-container span {
+  display: inline-block;
+}
+
+/* Testo scorrevole */
+.marquee-container.scrollable span {
+  animation: marquee 10s linear infinite; /* Abilita animazione */
+}
+
+/* Animazione per il testo scorrevole */
+@keyframes marquee {
+  from {
+    transform: translateX(100%); /* Inizia fuori dal contenitore */
+  }
+  to {
+    transform: translateX(-100%); /* Scorre verso sinistra */
+  }
+}
+
+/* Audio player */
+audio {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Piè di pagina */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Stile responsivo */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .marquee-container {
+    font-size: 1.2rem; /* Adatta la dimensione per schermi piccoli */
+  }
 }
