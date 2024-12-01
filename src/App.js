@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
+// Chiave API di Last.fm (sostituisci con la tua)
+const apiKey = "cc8a90af0785a5226c20a34c09ba6b5f";
+
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
 
@@ -14,12 +17,45 @@ function App() {
 
   const defaultCover = process.env.PUBLIC_URL + '/logo.png';
 
+  // Funzione per cercare la copertina tramite Last.fm
+  const fetchCoverFromLastFM = async (artist, title) => {
+    try {
+      const response = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(title)}&format=json`
+      );
+      const data = await response.json();
+      if (data?.track?.album?.image?.length > 0) {
+        return data.track.album.image[2]["#text"]; // Immagine di medie dimensioni
+      }
+      return null; // Nessuna immagine trovata
+    } catch (error) {
+      console.error("Errore nel caricamento della copertina da Last.fm:", error);
+      return null;
+    }
+  };
+
+  const getCoverImage = async () => {
+    if (currentSong?.artist?.image) {
+      const imageUrl = currentSong.artist.image;
+      return imageUrl.startsWith('http://')
+        ? imageUrl.replace('http://', 'https://')
+        : imageUrl;
+    }
+
+    // Fallback su Last.fm
+    if (currentSong?.artist?.name && currentSong?.title) {
+      const lastFmCover = await fetchCoverFromLastFM(currentSong.artist.name, currentSong.title);
+      if (lastFmCover) return lastFmCover;
+    }
+
+    return defaultCover; // Immagine di default
+  };
+
   useEffect(() => {
     const fetchCurrentSong = async () => {
       try {
         const response = await fetch('https://api.laut.fm/station/meteomeano/current_song');
         const data = await response.json();
-        console.log('Dati API:', data);
         setCurrentSong(data);
       } catch (error) {
         console.error('Errore nel recupero del brano corrente:', error);
@@ -41,16 +77,6 @@ function App() {
     }
   }, [currentSong]);
 
-  const getCoverImage = () => {
-    if (currentSong?.artist?.image) {
-      const imageUrl = currentSong.artist.image;
-      return imageUrl.startsWith('http://')
-        ? imageUrl.replace('http://', 'https://')
-        : imageUrl;
-    }
-    return defaultCover;
-  };
-
   return (
     <div className="App">
       <header>
@@ -60,7 +86,7 @@ function App() {
         {currentSong ? (
           <div className="song-info">
             <img
-              src={getCoverImage()}
+              src={currentSong?.coverUrl || defaultCover}
               alt={currentSong.title || 'Radio Meano'}
               className="cover"
               onError={(e) => {
