@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 // Chiave API di Last.fm (sostituisci con la tua)
-const apiKey = "cc8a90af0785a5226c20a34c09ba6b5f";
+const apiKey = process.env.REACT_APP_LASTFM_API_KEY;
 
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
