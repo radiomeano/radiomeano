@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/radiomeano/static/css/main.6fbb27c0.css",
-    "main.js": "/radiomeano/static/js/main.a777f158.js",
+    "main.js": "/radiomeano/static/js/main.f2f36706.js",
     "static/js/453.107ddc24.chunk.js": "/radiomeano/static/js/453.107ddc24.chunk.js",
     "index.html": "/radiomeano/index.html",
     "main.6fbb27c0.css.map": "/radiomeano/static/css/main.6fbb27c0.css.map",
-    "main.a777f158.js.map": "/radiomeano/static/js/main.a777f158.js.map",
+    "main.f2f36706.js.map": "/radiomeano/static/js/main.f2f36706.js.map",
     "453.107ddc24.chunk.js.map": "/radiomeano/static/js/453.107ddc24.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6fbb27c0.css",
-    "static/js/main.a777f158.js"
+    "static/js/main.f2f36706.js"
   ]
 }
